@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket Match Info</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Cricket Match Finder</h1>
+        <form id="matchForm">
+            <label for="dateInput">Enter Date (YYYY-MM-DD):</label>
+            <input type="date" id="dateInput" required>
+            <button type="submit">Get Matches</button>
+        </form>
+
+        <div id="matchesList"></div> <!-- Where match titles will be displayed -->
+
+        <div id="matchDetails" style="display: none;">
+            <h2>Match Details</h2>
+            <p id="venue"></p>
+            <p id="result"></p>
+            <h3>Select Best Player:</h3>
+            <button id="bestBatter">Best Batter</button>
+            <button id="bestBowler">Best Bowler</button>
+            <select id="inningsSelect">
+                <option value="1">1st Innings</option>
+                <option value="2">2nd Innings</option>
+            </select>
+            <p id="bestPlayer"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
