@@ -36,7 +36,7 @@ router.get('/match/:index', asyncHandler(async (req: Request, res: Response) => 
 
     try {
         const matches = await getMatchesByDate(date);
-        const selectedMatch = matches[index];  // Get match by index
+        const selectedMatch = matches[index];  
 
         if (!selectedMatch) {
             return res.status(404).json({ error: 'Match not found' });

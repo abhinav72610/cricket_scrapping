@@ -1,7 +1,9 @@
 import express from 'express';
 import apiRoutes from './src/api';  
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
 const port = 4000;
 
 app.use('/api', apiRoutes); 

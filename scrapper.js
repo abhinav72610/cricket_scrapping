@@ -34,9 +34,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 var _this = this;
 require('dotenv').config();
 var axios = require('axios');
+var API_KEY = '38eccc586dmsh38417244bd40a33p16e7acjsn5ced01b0cffa';
+var API_HOST = 'cricket-live-data.p.rapidapi.com';
 var apiRequest = function (url) { return __awaiter(_this, void 0, void 0, function () {
     var options, response, error_1;
     return __generator(this, function (_a) {
@@ -46,8 +57,8 @@ var apiRequest = function (url) { return __awaiter(_this, void 0, void 0, functi
                     method: 'GET',
                     url: url,
                     headers: {
-                        'x-rapidapi-key': process.env.API_KEY,
-                        'x-rapidapi-host': process.env.API_HOST
+                        'x-rapidapi-key': API_KEY,
+                        'x-rapidapi-host': API_HOST
                     }
                 };
                 _a.label = 1;
@@ -141,6 +152,7 @@ var getBestPlayerInMatch = function (matchId, index, role) { return __awaiter(_t
                     }
                     bestPlayer = findBestBowler(bowlingData);
                     console.log('Best Bowler:', bestPlayer['player_name']);
+                    return [2 /*return*/, { role: 'bowler', player: bestPlayer['player_name'], details: bestPlayer }];
                 }
                 else if (role === 'batter') {
                     battingData = matchDetails.scorecard[index].batting;
@@ -149,6 +161,7 @@ var getBestPlayerInMatch = function (matchId, index, role) { return __awaiter(_t
                     }
                     bestPlayer = findBestBatter(battingData);
                     console.log('Best Batter:', bestPlayer['player_name']);
+                    return [2 /*return*/, { role: 'batter', player: bestPlayer['player_name'], details: bestPlayer }];
                 }
                 else {
                     throw new Error("Unknown role: ".concat(role));
@@ -161,41 +174,43 @@ var getBestPlayerInMatch = function (matchId, index, role) { return __awaiter(_t
         }
     });
 }); };
-var main = function (date, role, innings) { return __awaiter(_this, void 0, void 0, function () {
-    var matches, _i, matches_1, match, error_3, error_4;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 8, , 9]);
-                return [4 /*yield*/, getMatchesByDate(date)];
-            case 1:
-                matches = _a.sent();
-                _i = 0, matches_1 = matches;
-                _a.label = 2;
-            case 2:
-                if (!(_i < matches_1.length)) return [3 /*break*/, 7];
-                match = matches_1[_i];
-                _a.label = 3;
-            case 3:
-                _a.trys.push([3, 5, , 6]);
-                return [4 /*yield*/, getBestPlayerInMatch(match['id'], innings, role)];
-            case 4:
-                _a.sent();
-                return [3 /*break*/, 6];
-            case 5:
-                error_3 = _a.sent();
-                console.log("Sorry, no data for ".concat(role, " in match: ").concat(match['match_title']));
-                return [3 /*break*/, 6];
-            case 6:
-                _i++;
-                return [3 /*break*/, 2];
-            case 7: return [3 /*break*/, 9];
-            case 8:
-                error_4 = _a.sent();
-                console.error("Error in fetching matches or ".concat(role, " data:"), error_4.message || error_4);
-                return [3 /*break*/, 9];
-            case 9: return [2 /*return*/];
-        }
+var main = function (date_1, role_1, innings_1) {
+    var args_1 = [];
+    for (var _i = 3; _i < arguments.length; _i++) {
+        args_1[_i - 3] = arguments[_i];
+    }
+    return __awaiter(_this, __spreadArray([date_1, role_1, innings_1], args_1, true), void 0, function (date, role, innings, matchIndex) {
+        var matches, selectedMatch, bestPlayer, error_3;
+        if (matchIndex === void 0) { matchIndex = 0; }
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, getMatchesByDate(date)];
+                case 1:
+                    matches = _a.sent();
+                    if (matches.length === 0) {
+                        console.log("No matches found for ".concat(date));
+                        return [2 /*return*/];
+                    }
+                    console.log("Matches on ".concat(date, ":"));
+                    matches.forEach(function (match, index) {
+                        console.log("".concat(index, ": ").concat(match.match_title));
+                    });
+                    selectedMatch = matches[matchIndex];
+                    console.log("Fetching details for match: ".concat(selectedMatch.match_title));
+                    return [4 /*yield*/, getBestPlayerInMatch(selectedMatch.id, innings, role)];
+                case 2:
+                    bestPlayer = _a.sent();
+                    console.log("Best ".concat(bestPlayer.role, ": ").concat(bestPlayer.player), bestPlayer.details);
+                    return [2 /*return*/, bestPlayer];
+                case 3:
+                    error_3 = _a.sent();
+                    console.error("Error in fetching matches or ".concat(role, " data:"), error_3.message || error_3);
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
     });
-}); };
-main('2023-10-22', 'batter', 1);
+};
+main('2023-10-22', 'batter', 1, 7);
